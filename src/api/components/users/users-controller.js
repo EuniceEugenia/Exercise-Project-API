@@ -63,7 +63,7 @@ async function createUser(request, response, next) {
     if (password !== confirm_password) {
       throw errorResponder(
         errorTypes.INVALID_PASSWORD,
-        'Password do not match'
+        'Password and Confirmed Password do not match'
       );
     }
     const success = await usersService.createUser(name, email, password);
