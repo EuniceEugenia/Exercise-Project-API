@@ -60,7 +60,7 @@ async function createUser(request, response, next) {
       );
     }
 
-    if (password !== confirm_password) {
+    if (password != confirm_password) {
       throw errorResponder(
         errorTypes.INVALID_PASSWORD,
         'Password and Confirmed Password do not match'
@@ -93,19 +93,26 @@ async function updateUser(request, response, next) {
     const name = request.body.name;
     const email = request.body.email;
 
-    const cemail = await usersService.cemail(email);
-    if (cemail) {
+    const success = await usersService.updateUser(id, name, email);
+    if (!success) {
+      throw errorResponder(
+        errorTypes.UNPROCESSABLE_ENTITY,
+        'Failed to update user'
+      );
+    }
+    if (email) {
+      const cemail = await usersService.cemail(email);
+
       throw errorResponder(
         errorTypes.EMAIL_ALREADY_TAKEN,
         'Email already taken'
       );
     }
 
-    const success = await usersService.updateUser(id, name, email);
-    if (!success) {
+    if (password != confirm_password) {
       throw errorResponder(
-        errorTypes.UNPROCESSABLE_ENTITY,
-        'Failed to update user'
+        errorTypes.INVALID_PASSWORD,
+        'Password and Confirmed Password do not match'
       );
     }
 
@@ -137,7 +144,7 @@ async function changePassword(request, response, next) {
       );
     }
 
-    if (newPassword !== confirmPassword) {
+    if (newPassword != confirmPassword) {
       throw errorResponder(
         errorTypes.INVALID_PASSWORD,
         'New password and confirmation do not match'
@@ -157,7 +164,7 @@ async function changePassword(request, response, next) {
       );
     }
 
-    return response.status(200).json({ id });
+    return response.status(200).json({ id, newPassword });
   } catch (error) {
     return next(error);
   }

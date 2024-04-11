@@ -7,7 +7,8 @@ module.exports = {
       email: Joi.string().email().required().label('Email'),
       password: Joi.string().min(6).max(32).required().label('Password'),
       confirm_password: Joi.string()
-        .valid(Joi.ref('password'))
+        .min(6)
+        .max(32)
         .required()
         .label('Confirm Password')
         .messages({ 'any.only': 'Passwords do not match' }),
